@@ -1,0 +1,11 @@
+name = "omarcoaraujo/tint"
+version = "0.1.0"
+description = "A Chalk-inspired terminal styling library for Luau"
+license = "MIT"
+authors = ["omarcoaraujo"]
+
+[target]
+environment = "luau"
+lib = "lib/init.luau"
+
+[dependencies]
