@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="80" viewBox="0 0 360 80">
+  <rect width="360" height="80" rx="10" fill="#0d1117"/>
+
+  <!-- "tint" with each letter in a distinct terminal color -->
+  <text x="20" y="58" font-family="'Courier New', Courier, monospace" font-size="52" font-weight="bold" fill="#ff5555">t</text>
+  <text x="52" y="58" font-family="'Courier New', Courier, monospace" font-size="52" font-weight="bold" fill="#50fa7b">i</text>
+  <text x="84" y="58" font-family="'Courier New', Courier, monospace" font-size="52" font-weight="bold" fill="#8be9fd">n</text>
+  <text x="116" y="58" font-family="'Courier New', Courier, monospace" font-size="52" font-weight="bold" fill="#ff79c6">t</text>
+
+  <!-- divider -->
+  <line x1="164" y1="14" x2="164" y2="66" stroke="#30363d" stroke-width="1.5"/>
+
+  <!-- tagline -->
+  <text x="182" y="37" font-family="'Courier New', Courier, monospace" font-size="13" fill="#8b949e">chalk-inspired</text>
+  <text x="182" y="56" font-family="'Courier New', Courier, monospace" font-size="13" fill="#8b949e">terminal colors for luau</text>
+</svg>
