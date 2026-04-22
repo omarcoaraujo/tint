@@ -1,7 +1,6 @@
 {
   "languageMode": "strict",
   "aliases": {
-    "lib": "lib",
-    "lune": "~/.lune/.typedefs/0.10.2/"
+    "lib": "./lib",
   }
 }

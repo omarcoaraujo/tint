@@ -6,4 +6,4 @@
 [tools]
 stylua = "JohnnyMorganz/StyLua@2.4.0"
 luau-lsp = "JohnnyMorganz/luau-lsp@1.64.0"
-lune = "lune-org/lune@0.10.2"
+zune = "Scythe-Technology/zune@0.5.5"
