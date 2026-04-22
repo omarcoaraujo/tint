@@ -252,6 +252,19 @@ function spec.should_return_0_for_ci_with_force_color_0()
 	assert(color_support.detect_level { env = { CI = "true", FORCE_COLOR = "0" } } == 0)
 end
 
+-- TTY
+function spec.should_return_0_when_not_tty()
+	assert(color_support.detect_level { is_tty = false, env = { COLORTERM = "truecolor" } } == 0)
+end
+
+function spec.should_return_3_when_not_tty_with_force_color()
+	assert(color_support.detect_level { is_tty = false, env = { FORCE_COLOR = "3" } } == 3)
+end
+
+function spec.should_return_3_when_tty_with_truecolor()
+	assert(color_support.detect_level { is_tty = true, env = { COLORTERM = "truecolor" } } == 3)
+end
+
 local function is_test(name: string, value: any)
 	return typeof(value) == "function" and name:sub(1, 7) == "should_"
 end
