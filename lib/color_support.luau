@@ -1,8 +1,7 @@
-local process = require "@lune/process"
-
-local process_env = process.env
-local process_args = process.args
-local process_os = process.os
+local process_env = zune.process.env
+local process_args = zune.process.args
+local process_os = zune.platform.os
+local is_tty = zune.io.terminal.isTTY
 
 local function has_flag(args: { string }, flag: string)
 	local prefix = if #flag == 1 then "-" else "--"
@@ -33,10 +32,11 @@ local function matches_any(str: string, patterns: { string })
 	return false
 end
 
-local function detect_level(config: { env: { [string]: string? }?, args: { string }?, os: string? }?)
+local function detect_level(config: { env: { [string]: string? }?, args: { string }?, os: string?, is_tty: boolean? }?)
 	local env = if config then config.env or process_env else process_env
 	local args = if config then config.args or {} else process_args
 	local os = if config then config.os or "linux" else process_os
+	local tty = if config then if config.is_tty ~= nil then config.is_tty else true else is_tty
 
 	local function check_flag(flag: string)
 		return has_flag(args, flag)
@@ -57,6 +57,9 @@ local function detect_level(config: { env: { [string]: string? }?, args: { strin
 
 	-- https://no-color.org (FORCE_COLOR overrides)
 	if env.NO_COLOR ~= nil and force_color == nil then return 0 end
+
+	-- No color when not a TTY (piping to file/process)
+	if not tty and force_color == nil then return 0 end
 	local min = force_color or 0
 
 	if env.TERM == "dumb" then return min end
