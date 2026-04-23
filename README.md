@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="320" src="assets/logo.svg" alt="Tint"/>
+  <img width="360" src="assets/logo.svg" alt="Tint"/>
   <br/><br/>
   <p>Chalk-inspired terminal string styling for <a href="https://luau.org">Luau</a>.</p>
 </div>
