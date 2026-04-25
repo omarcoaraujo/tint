@@ -3,7 +3,12 @@ version = "0.1.0"
 description = "Terminal string styling library for Luau"
 license = "MIT"
 authors = ["omarcoaraujo"]
+repository = "https://github.com/omarcoaraujo/tint"
+includes = ["pesde.toml", "README.md", "LICENSE", "lib/**/*"]
 
 [target]
 environment = "luau"
 lib = "lib/init.luau"
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
