@@ -107,16 +107,16 @@ Tint detects color support automatically at startup and adapts all output accord
 ### Overriding
 
 ```sh
-FORCE_COLOR=0 zune run script.lua   # disable all colors
-FORCE_COLOR=3 zune run script.lua   # force true color
-NO_COLOR=1    zune run script.lua   # disable per no-color.org spec
+FORCE_COLOR=0 zune run script.luau  # disable all colors
+FORCE_COLOR=3 zune run script.luau  # force true color
+NO_COLOR=1    zune run script.luau  # disable per no-color.org spec
 ```
 
 Or via CLI flags:
 
 ```sh
-zune run script.lua --no-color      # disable colors
-zune run script.lua --color=256     # force 256 color mode
+zune run script.luau --no-color     # disable colors
+zune run script.luau --color=256    # force 256 color mode
 ```
 
 ## Runtime compatibility
