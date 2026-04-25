@@ -115,8 +115,8 @@ NO_COLOR=1    zune run script.luau  # disable per no-color.org spec
 Or via CLI flags:
 
 ```sh
-zune run script.lua --no-color      # disable colors
-zune run script.lua --color=256     # force 256 color mode
+zune run script.luau --no-color     # disable colors
+zune run script.luau --color=256    # force 256 color mode
 ```
 
 ## Runtime compatibility
