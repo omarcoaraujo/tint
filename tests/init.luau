@@ -1,5 +1,7 @@
-local color_support = require "@lib/color_support"
 local tint = require "@lib"
+
+local color_convert = require "@lib/color_convert"
+local color_support = require "@lib/color_support"
 
 local spec = {} :: { [string]: any }
 
@@ -265,6 +267,151 @@ function spec.should_return_3_when_tty_with_truecolor()
 	assert(color_support.detect_level { is_tty = true, env = { COLORTERM = "truecolor" } } == 3)
 end
 
+-- RGB to 256
+function spec.should_convert_red_to_ansi256()
+	assert(color_convert.to_ansi256(255, 0, 0) == 196)
+end
+
+function spec.should_convert_green_to_ansi256()
+	assert(color_convert.to_ansi256(0, 255, 0) == 46)
+end
+
+function spec.should_convert_blue_to_ansi256()
+	assert(color_convert.to_ansi256(0, 0, 255) == 21)
+end
+
+function spec.should_convert_white_to_ansi256()
+	assert(color_convert.to_ansi256(255, 255, 255) == 231)
+end
+
+function spec.should_convert_black_to_ansi256()
+	assert(color_convert.to_ansi256(0, 0, 0) == 16)
+end
+
+function spec.should_convert_gray_to_ansi256()
+	assert(color_convert.to_ansi256(128, 128, 128) == 244)
+end
+
+-- RGB to 16
+function spec.should_convert_red_to_ansi16()
+	assert(color_convert.to_ansi16(255, 0, 0) == 91)
+end
+
+function spec.should_convert_green_to_ansi16()
+	assert(color_convert.to_ansi16(0, 255, 0) == 92)
+end
+
+function spec.should_convert_blue_to_ansi16()
+	assert(color_convert.to_ansi16(0, 0, 255) == 94)
+end
+
+function spec.should_convert_white_to_ansi16()
+	assert(color_convert.to_ansi16(255, 255, 255) == 97)
+end
+
+function spec.should_convert_black_to_ansi16()
+	assert(color_convert.to_ansi16(0, 0, 0) == 30)
+end
+
+-- Basic styling
+function spec.should_style_with_underline()
+	assert(tint.underline "foo" == "\27[4mfoo\27[24m")
+end
+
+function spec.should_style_with_red()
+	assert(tint.red "foo" == "\27[31mfoo\27[39m")
+end
+
+function spec.should_style_with_bg_red()
+	assert(tint.bg_red "foo" == "\27[41mfoo\27[49m")
+end
+
+-- Multiple styles at once
+function spec.should_apply_red_bg_green_underline()
+	assert(tint.red.bg_green.underline "foo" == "\27[31m\27[42m\27[4mfoo\27[24m\27[49m\27[39m")
+end
+
+function spec.should_apply_underline_red_bg_green()
+	assert(tint.underline.red.bg_green "foo" == "\27[4m\27[31m\27[42mfoo\27[49m\27[39m\27[24m")
+end
+
+-- Nesting styles
+function spec.should_nest_styles()
+	assert(tint.red("foo" .. tint.underline.bg_blue "bar" .. "!") == "\27[31mfoo\27[4m\27[44mbar\27[49m\27[24m!\27[39m")
+end
+
+-- Nesting same type
+function spec.should_nest_same_type_colors()
+	assert(
+		tint.red("a" .. tint.yellow("b" .. tint.green "c" .. "b") .. "c")
+			== "\27[31ma\27[33mb\27[32mc\27[39m\27[31m\27[33mb\27[39m\27[31mc\27[39m"
+	)
+end
+
+-- Reset
+function spec.should_reset_all_styles()
+	assert(
+		tint.reset(tint.red.bg_green.underline "foo" .. "foo")
+			== "\27[0m\27[31m\27[42m\27[4mfoo\27[24m\27[49m\27[39mfoo\27[0m"
+	)
+end
+
+-- Caching / reusable styles
+function spec.should_cache_styles()
+	local red = tint.red
+	local red_bold = tint.red.bold
+
+	assert(red "foo" ~= red_bold "foo")
+end
+
+-- Gray alias
+function spec.should_alias_gray_to_bright_black()
+	assert(tint.gray "foo" == "\27[90mfoo\27[39m")
+end
+
+function spec.should_support_bright_black()
+	assert(tint.bright_black "foo" == "\27[90mfoo\27[39m")
+end
+
+-- Multiple arguments
+function spec.should_join_args_with_space()
+	assert(tint.red("foo", "bar") == "\27[31mfoo bar\27[39m")
+end
+
+-- No arguments returns empty
+function spec.should_return_empty_for_no_args()
+	assert(tint.red() == "")
+	assert(tint.red.blue.black() == "")
+end
+
+-- RGB
+function spec.should_apply_rgb()
+	assert(tint.rgb(255, 0, 0) "foo" == "\27[38;2;255;0;0mfoo\27[39m")
+end
+
+function spec.should_apply_bg_rgb()
+	assert(tint.bg_rgb(255, 0, 0) "foo" == "\27[48;2;255;0;0mfoo\27[49m")
+end
+
+-- Hex
+function spec.should_apply_hex()
+	assert(tint.hex "#FF0000" "foo" == "\27[38;2;255;0;0mfoo\27[39m")
+end
+
+function spec.should_apply_bg_hex()
+	assert(tint.bg_hex "#FF0000" "foo" == "\27[48;2;255;0;0mfoo\27[49m")
+end
+
+-- Hex chained with bold
+function spec.should_chain_hex_with_bold()
+	assert(tint.hex("#FF0000").bold "foo" == "\27[38;2;255;0;0m\27[1mfoo\27[22m\27[39m")
+end
+
+-- RGB chained
+function spec.should_chain_rgb_with_underline()
+	assert(tint.rgb(123, 45, 67).underline "foo" == "\27[38;2;123;45;67m\27[4mfoo\27[24m\27[39m")
+end
+
 local function is_test(name: string, value: any)
 	return typeof(value) == "function" and name:sub(1, 7) == "should_"
 end
@@ -289,9 +436,9 @@ for _, name in keys do
 
 	if not success then
 		failed += 1
-		print(`\27[31m✗\27[0m [{name}] {errorMessage}`)
+		print(`  {tint.red.bold "✗"} {tint.dim(name)} {tint.red(errorMessage)}`)
 	end
 end
 
-if failed > 0 then print(`\n\27[31m✗ {failed}/{total} tests failed!\27[0m`) end
-print(`\27[32m✓ {total}/{total} all tests passed!\27[0m \n`)
+if failed > 0 then error(`\n{tint.red.bold(`✗ {failed}/{total} tests failed!`)}`) end
+print(`{tint.green.bold(`✓ {total}/{total}`)} all tests passed! \n`)
