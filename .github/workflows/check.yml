@@ -24,3 +24,5 @@ jobs:
         with:
           token: ${{ github.token }}
       - run: zune run tests
+        env:
+          FORCE_COLOR: "3"
