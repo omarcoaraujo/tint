@@ -1,7 +1,10 @@
 <div align="center">
   <img width="320" src="https://raw.githubusercontent.com/omarcoaraujo/tint/main/assets/logo.svg" alt="Tint"/>
   <br/><br/>
-  <p>Chalk-inspired terminal string styling for <a href="https://lua.org">Luau</a>.</p>
+  <p>Chalk-inspired terminal string styling for <a href="https://luau.org">Luau</a>.</p>
+
+  [![Check](https://github.com/omarcoaraujo/tint/actions/workflows/check.yml/badge.svg)](https://github.com/omarcoaraujo/tint/actions/workflows/check.yml)
+  [![Release](https://github.com/omarcoaraujo/tint/actions/workflows/release.yml/badge.svg)](https://github.com/omarcoaraujo/tint/actions/workflows/release.yml)
 </div>
 
 ---
@@ -26,7 +29,7 @@ tint = { name = "omarcoaraujo/tint", version = "^0.1.0" }
 
 Then require it:
 
-```lua
+```luau
 local tint = require("@pkg/tint")
 ```
 
@@ -34,7 +37,7 @@ local tint = require("@pkg/tint")
 
 ### Basic colors
 
-```lua
+```luau
 print(tint.red("ERROR"))
 print(tint.green("SUCCESS"))
 print(tint.yellow("WARNING"))
@@ -44,7 +47,7 @@ print(tint.cyan("note"))
 
 ### Modifiers
 
-```lua
+```luau
 print(tint.bold("bold"))
 print(tint.italic("italic"))
 print(tint.underline("underline"))
@@ -56,7 +59,7 @@ print(tint.strikethrough("strikethrough"))
 
 Styles can be chained in any order:
 
-```lua
+```luau
 print(tint.red.bold("red and bold"))
 print(tint.blue.bold.underline("important"))
 print(tint.green.italic("success"))
@@ -66,14 +69,14 @@ print(tint.green.italic("success"))
 
 Outer colors are automatically restored after inner styled segments:
 
-```lua
+```luau
 print(tint.red("error: ", tint.yellow("detail"), " continues in red"))
 print(tint.bold("BOLD ", tint.underline("BOLD+UNDERLINE"), " BOLD again"))
 ```
 
 ### True color (RGB & Hex)
 
-```lua
+```luau
 print(tint.rgb(255, 136, 0)("orange"))
 print(tint.hex("#ff8800")("also orange"))
 print(tint.rgb(255, 136, 0).bold("bold orange"))
@@ -87,7 +90,7 @@ On terminals that do not support true color, RGB and hex values are automaticall
 
 ### Background colors
 
-```lua
+```luau
 print(tint.bg_red("red background"))
 print(tint.bg_green("green background"))
 print(tint.red(tint.bg_white("red text on white background")))
@@ -127,7 +130,7 @@ Tint works across Luau runtimes with automatic detection:
 |---------|--------------|---------------|
 | [Zune](https://zune.sh) | Full | Yes |
 | [Lune](https://lune-org.github.io/docs) | Full | No (assumes TTY) |
-| [Lute](https://lute.lua.org) | Full | No (assumes TTY) |
+| [Lute](https://lute.luau.org) | Full | No (assumes TTY) |
 
 ## License
 
