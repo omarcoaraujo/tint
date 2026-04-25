@@ -1,7 +1,9 @@
-local process_env = zune.process.env
-local process_args = zune.process.args
-local process_os = zune.platform.os
-local is_tty = zune.io.terminal.isTTY
+local runtime = require "./runtime"
+
+local process_env = runtime.env
+local process_args = runtime.args
+local process_os = runtime.os
+local is_tty = runtime.is_tty
 
 local function has_flag(args: { string }, flag: string)
 	local prefix = if #flag == 1 then "-" else "--"
