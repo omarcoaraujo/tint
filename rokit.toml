@@ -7,3 +7,4 @@
 stylua = "JohnnyMorganz/StyLua@2.4.0"
 luau-lsp = "JohnnyMorganz/luau-lsp@1.64.0"
 zune = "Scythe-Technology/zune@0.5.5"
+lute = "luau-lang/lute@1.0.0"
