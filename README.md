@@ -5,6 +5,9 @@
 
   [![Check](https://github.com/omarcoaraujo/tint/actions/workflows/check.yml/badge.svg)](https://github.com/omarcoaraujo/tint/actions/workflows/check.yml)
   [![Release](https://github.com/omarcoaraujo/tint/actions/workflows/release.yml/badge.svg)](https://github.com/omarcoaraujo/tint/actions/workflows/release.yml)
+
+  <br/>
+  <img width="760" src="https://raw.githubusercontent.com/omarcoaraujo/tint/main/assets/showcase.png" alt="Tint showcase in a terminal"/>
 </div>
 
 ---
@@ -24,7 +27,7 @@ Add Tint to your `pesde.toml`:
 
 ```toml
 [dependencies]
-tint = { name = "omarcoaraujo/tint", version = "^0.2.0" }
+tint = { name = "omarcoaraujo/tint", version = "^0.2.1" }
 ```
 
 Then require it:
