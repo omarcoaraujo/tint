@@ -80,7 +80,6 @@ print(tint.bold("BOLD ", tint.underline("BOLD+UNDERLINE"), " BOLD again"))
 print(tint.rgb(255, 136, 0)("orange"))
 print(tint.hex("#ff8800")("also orange"))
 print(tint.rgb(255, 136, 0).bold("bold orange"))
-print(tint.bold.hex("#ff8800")("also bold orange"))
 
 -- Background
 print(tint.bg_rgb(30, 30, 46)("text on dark bg"))

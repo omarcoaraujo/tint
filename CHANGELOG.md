@@ -9,7 +9,6 @@
 - New `visible` style that only prints when colors are on
 - New `strip` function that removes colors and styles from a text
 - Numeric `FORCE_COLOR` now sets exactly the color level it says, also on Windows
-- RGB, hex and 256-color styles can now be chained after any other style
 - New `tint.new` that creates a copy of tint locked to a chosen color level
 - Calling `tint` directly with text now returns the text unstyled
 - Invalid `FORCE_COLOR` values such as `2abc` or `0x2` are now ignored
