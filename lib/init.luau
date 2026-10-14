@@ -218,7 +218,7 @@ local function create_tint(level: number): tint
 	end
 
 	function tint.strip(text: string)
-		return string.gsub(text, "\27%[[%d;:?]*[ -/]*[@-~]", "")
+		return (string.gsub(text, "\27%[[%d;:?]*[ -/]*[@-~]", ""))
 	end
 
 	return tint :: tint

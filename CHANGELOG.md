@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 - 2026-10-13
+
+- Removing colors from a text no longer leaves a stray number after it
+
 ## 0.2.0 - 2026-10-13
 
 - Underline styles: double, curly, dotted and dashed

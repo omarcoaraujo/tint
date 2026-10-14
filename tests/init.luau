@@ -707,6 +707,11 @@ function spec.should_strip_ansi_codes()
 	assert(tint.strip(tint.rgb(1, 2, 3) "foo" .. "bar") == "foobar")
 end
 
+function spec.should_return_a_single_value_when_stripping()
+	assert(select("#", tint.strip(tint.red "foo")) == 1)
+	assert(tint.red(tint.strip(tint.bold "foo")) == "\27[31mfoo\27[39m")
+end
+
 function spec.should_keep_plain_text_when_stripping()
 	assert(tint.strip "foo [31m bar" == "foo [31m bar")
 end
