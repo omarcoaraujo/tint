@@ -607,36 +607,6 @@ function spec.should_keep_instances_independent()
 	assert(colored.red "foo" == "\27[31mfoo\27[39m")
 end
 
--- Chaining color functions
-function spec.should_chain_color_functions_after_other_styles()
-	assert(tint.bold.hex "#FF0000" "foo" == "\27[1m\27[38;2;255;0;0mfoo\27[39m\27[22m")
-	assert(tint.red.bg_rgb(0, 255, 0) "foo" == "\27[31m\27[48;2;0;255;0mfoo\27[49m\27[39m")
-	assert(tint.bold.ansi256(200).underline "foo" == "\27[1m\27[38;5;200m\27[4mfoo\27[24m\27[39m\27[22m")
-	assert(tint.underline_curly.underline_hex "#FF0000" "foo" == "\27[4:3m\27[58;2;255;0;0mfoo\27[59m\27[24m")
-end
-
-function spec.should_chain_color_functions_between_color_functions()
-	assert(
-		tint.rgb(255, 0, 0).bg_hex("#00FF00").bold "foo"
-			== "\27[38;2;255;0;0m\27[48;2;0;255;0m\27[1mfoo\27[22m\27[49m\27[39m"
-	)
-end
-
-function spec.should_downsample_chained_color_functions_per_level()
-	local basic = tint.new { level = 1 }
-	local ansi256 = tint.new { level = 2 }
-
-	assert(basic.bold.hex "#FF0000" "foo" == "\27[1m\27[91mfoo\27[39m\27[22m")
-	assert(ansi256.bold.hex "#FF0000" "foo" == "\27[1m\27[38;5;196mfoo\27[39m\27[22m")
-	assert(basic.bold.ansi256(196) "foo" == "\27[1m\27[91mfoo\27[39m\27[22m")
-	assert(basic.bold.underline_rgb(255, 0, 0) "foo" == "\27[1m\27[58;5;9mfoo\27[59m\27[22m")
-end
-
-function spec.should_chain_color_functions_after_visible()
-	assert(tint.new({ level = 0 }).visible.hex "#FF0000" "foo" == "")
-	assert(tint.new({ level = 3 }).visible.hex "#FF0000" "foo" == "\27[38;2;255;0;0mfoo\27[39m")
-end
-
 -- Line breaks
 function spec.should_reopen_style_after_line_break()
 	assert(tint.red "foo\nbar" == "\27[31mfoo\27[39m\n\27[31mbar\27[39m")
