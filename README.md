@@ -24,7 +24,7 @@ Add Tint to your `pesde.toml`:
 
 ```toml
 [dependencies]
-tint = { name = "omarcoaraujo/tint", version = "^0.1.0" }
+tint = { name = "omarcoaraujo/tint", version = "^0.2.0" }
 ```
 
 Then require it:
@@ -88,6 +88,56 @@ print(tint.bg_hex("#1e1e2e")("text on hex bg"))
 
 On terminals that do not support true color, RGB and hex values are automatically downgraded to the nearest 256-color or 16-color equivalent.
 
+### 256-color codes
+
+```luau
+print(tint.ansi256(200)("pink"))
+print(tint.bg_ansi256(200)("pink background"))
+```
+
+At color level 1 the codes are downgraded to the 16-color palette.
+
+### Underline styles and colors
+
+```luau
+print(tint.underline_curly("curly"))
+print(tint.underline_double("double"))
+print(tint.underline_dotted("dotted"))
+print(tint.underline_dashed("dashed"))
+
+print(tint.underline_curly.underline_red("red curly"))
+print(tint.underline_curly.underline_bright_blue("blue curly"))
+print(tint.underline_rgb(255, 136, 0)("orange underline color"))
+print(tint.underline_hex("#ff8800")("same, from hex"))
+print(tint.underline_ansi256(200)("256-color underline color"))
+```
+
+The underline color only shows when an underline style is also applied. Terminal support varies (Kitty, WezTerm, VTE, Windows Terminal, iTerm2).
+
+### Visible
+
+`visible` only prints when colors are on, and returns an empty string otherwise:
+
+```luau
+print(tint.visible.dim("only with colors"))
+```
+
+### Strip
+
+Removes every ANSI escape code from a string:
+
+```luau
+print(tint.strip(tint.red.bold("plain")))
+```
+
+### Multi-line text
+
+Styles are closed and reopened around each line break, so every line keeps its style:
+
+```luau
+print(tint.bg_red("first line\nsecond line"))
+```
+
 ### Background colors
 
 ```luau
@@ -107,10 +157,25 @@ Tint detects color support automatically at startup and adapts all output accord
 | `2`   | 256 colors         | `TERM=xterm-256color`                 |
 | `3`   | True color (16M)   | `COLORTERM=truecolor`, Windows Terminal, iTerm 3+ |
 
+### Fixed level
+
+`tint.new` creates an independent copy locked to a level, ignoring the terminal:
+
+```luau
+local basic = tint.new({ level = 1 })
+print(basic.hex("#ff8800")("always 16 colors"))
+
+local plain = tint.new({ level = 0 })
+print(plain.red("never colored"))
+```
+
+Without a `level`, the copy uses the detected one.
+
 ### Overriding
 
 ```sh
 FORCE_COLOR=0 zune run script.luau  # disable all colors
+FORCE_COLOR=1 zune run script.luau  # exactly 16 colors, even on Windows
 FORCE_COLOR=3 zune run script.luau  # force true color
 NO_COLOR=1    zune run script.luau  # disable per no-color.org spec
 ```
