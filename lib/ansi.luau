@@ -1,4 +1,4 @@
-return table.freeze {
+local codes: { [string]: { number | string } } = {
 	-- Modifiers
 	reset = { 0, 0 },
 	bold = { 1, 22 },
@@ -9,6 +9,31 @@ return table.freeze {
 	inverse = { 7, 27 },
 	hidden = { 8, 28 },
 	strikethrough = { 9, 29 },
+
+	-- Underline styles
+	underline_double = { "4:2", 24 },
+	underline_curly = { "4:3", 24 },
+	underline_dotted = { "4:4", 24 },
+	underline_dashed = { "4:5", 24 },
+
+	-- Underline colors
+	underline_black = { "58;5;0", 59 },
+	underline_red = { "58;5;1", 59 },
+	underline_green = { "58;5;2", 59 },
+	underline_yellow = { "58;5;3", 59 },
+	underline_blue = { "58;5;4", 59 },
+	underline_magenta = { "58;5;5", 59 },
+	underline_cyan = { "58;5;6", 59 },
+	underline_white = { "58;5;7", 59 },
+	underline_gray = { "58;5;8", 59 },
+	underline_bright_black = { "58;5;8", 59 },
+	underline_bright_red = { "58;5;9", 59 },
+	underline_bright_green = { "58;5;10", 59 },
+	underline_bright_yellow = { "58;5;11", 59 },
+	underline_bright_blue = { "58;5;12", 59 },
+	underline_bright_magenta = { "58;5;13", 59 },
+	underline_bright_cyan = { "58;5;14", 59 },
+	underline_bright_white = { "58;5;15", 59 },
 
 	-- Foreground colors
 	black = { 30, 39 },
@@ -51,3 +76,5 @@ return table.freeze {
 	bg_bright_cyan = { 106, 49 },
 	bg_bright_white = { 107, 49 },
 }
+
+return table.freeze(codes)

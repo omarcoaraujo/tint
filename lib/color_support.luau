@@ -17,13 +17,16 @@ local function env_force_color(env: { [string]: string? }): number?
 	if value == "true" or value == "" then return 1 end
 	if value == "false" then return 0 end
 
-	local level = tonumber(value)
-	if level == nil then return nil end
+	return nil
+end
 
-	level = math.min(math.floor(level), 3)
-	if level < 0 or level > 3 then return nil end
+local function env_exact_level(env: { [string]: string? }): number?
+	local value = env.FORCE_COLOR
 
-	return level
+	if value == nil then return nil end
+	if not string.match(value, "^%d+$") then return nil end
+
+	return math.min(tonumber(value) :: number, 3)
 end
 
 local function matches_any(str: string, patterns: { string })
@@ -44,6 +47,17 @@ local function detect_level(config: { env: { [string]: string? }?, args: { strin
 		return has_flag(args, flag)
 	end
 
+	local function flag_level(): number?
+		if check_flag "color=16m" or check_flag "color=full" or check_flag "color=truecolor" then return 3 end
+		if check_flag "color=256" then return 2 end
+
+		return nil
+	end
+
+	local exact_level = env_exact_level(env)
+	if exact_level == 0 then return 0 end
+	if exact_level ~= nil then return flag_level() or exact_level end
+
 	local flag_no_color = check_flag "no-color" or check_flag "color=false" or check_flag "color=never"
 	local flag_color = check_flag "color" or check_flag "color=true" or check_flag "color=always"
 	local env_force = env_force_color(env)
@@ -54,8 +68,8 @@ local function detect_level(config: { env: { [string]: string? }?, args: { strin
 	local force_color = flag_force
 	if force_color == 0 then return 0 end
 
-	if check_flag "color=16m" or check_flag "color=full" or check_flag "color=truecolor" then return 3 end
-	if check_flag "color=256" then return 2 end
+	local from_flag = flag_level()
+	if from_flag ~= nil then return from_flag end
 
 	-- https://no-color.org (FORCE_COLOR overrides)
 	if env.NO_COLOR ~= nil and force_color == nil then return 0 end

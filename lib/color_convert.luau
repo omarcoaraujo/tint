@@ -42,7 +42,16 @@ local function rgb_to_ansi16(r: number, g: number, b: number)
 	return ansi256_to_ansi16(rgb_to_ansi256(r, g, b))
 end
 
+local function ansi256_to_palette16(code: number)
+	local ansi16 = ansi256_to_ansi16(code)
+	if ansi16 >= 90 then return ansi16 - 90 + 8 end
+	return ansi16 - 30
+end
+
 return table.freeze {
+	ansi256_to_ansi16 = ansi256_to_ansi16,
+	ansi256_to_palette16 = ansi256_to_palette16,
+
 	to_ansi256 = rgb_to_ansi256,
 	to_ansi16 = rgb_to_ansi16,
 }
