@@ -1,5 +1,5 @@
 local ansi = require "@self/ansi"
-local color_convert = require "@self/color_convert"
+local color_code = require "@self/color_code"
 local color_support = require "@self/color_support"
 
 export type style = ((...any) -> string) & {
@@ -73,9 +73,7 @@ export type style = ((...any) -> string) & {
 	bg_bright_magenta: style,
 	bg_bright_cyan: style,
 	bg_bright_white: style,
-}
 
-type tint = style & ((...any) -> string) & {
 	rgb: (r: number, g: number, b: number) -> style,
 	hex: (hex: string) -> style,
 
@@ -88,7 +86,9 @@ type tint = style & ((...any) -> string) & {
 	underline_rgb: (r: number, g: number, b: number) -> style,
 	underline_hex: (hex: string) -> style,
 	underline_ansi256: (code: number) -> style,
+}
 
+type tint = style & ((...any) -> string) & {
 	strip: (text: string) -> string,
 	new: (config: { level: number? }?) -> tint,
 }
@@ -174,11 +174,20 @@ local function create_style(level: number, codes: { { number | string } }, visib
 			return open .. text .. close
 		end,
 
-		__index = function(_, key)
+		__index = function(_, key): any
 			if key == "visible" then return create_style(level, codes, true) end
+			local builder = color_code[key]
+
+			if builder then
+				return function(a, b, c)
+					local new_codes = table.clone(codes)
+					table.insert(new_codes, builder(level, a, b, c))
+					return create_style(level, new_codes, visible_only)
+				end
+			end
 
 			local code = ansi[key]
-			if not code then return end
+			if not code then return nil end
 
 			local new_codes = table.clone(codes)
 			table.insert(new_codes, code)
@@ -190,32 +199,15 @@ local function create_style(level: number, codes: { { number | string } }, visib
 	return style
 end
 
-local function parse_hex(hex: string)
-	hex = hex:gsub("#", "")
-
-	local r = tonumber(hex:sub(1, 2), 16) or 0
-	local g = tonumber(hex:sub(3, 4), 16) or 0
-	local b = tonumber(hex:sub(5, 6), 16) or 0
-
-	return r, g, b
-end
-
 local function create_tint(level: number): tint
-	local has_256 = level >= 2
-	local has_16m = level >= 3
-
 	local tint = setmetatable({}, {
 		__call = function(_, ...)
 			if select("#", ...) == 0 then return "" end
 			return join_arguments(...)
 		end,
 
-		__index = function(self, key)
-			if key == "visible" then return create_style(level, {}, true) end
-			local code = ansi[key]
-
-			if not code then return end
-			return create_style(level, { code })
+		__index = function(_, key)
+			return (create_style(level, {}) :: any)[key]
 		end,
 	})
 
@@ -225,53 +217,8 @@ local function create_tint(level: number): tint
 		return create_tint(math.clamp(math.floor(requested), 0, 3))
 	end
 
-	function tint.rgb(r: number, g: number, b: number)
-		if has_16m then return create_style(level, { { `38;2;{r};{g};{b}`, 39 } }) end
-		if has_256 then return create_style(level, { { `38;5;{color_convert.to_ansi256(r, g, b)}`, 39 } }) end
-		return create_style(level, { { color_convert.to_ansi16(r, g, b), 39 } })
-	end
-
-	function tint.bg_rgb(r: number, g: number, b: number)
-		if has_16m then return create_style(level, { { `48;2;{r};{g};{b}`, 49 } }) end
-		if has_256 then return create_style(level, { { `48;5;{color_convert.to_ansi256(r, g, b)}`, 49 } }) end
-		return create_style(level, { { color_convert.to_ansi16(r, g, b) + 10, 49 } })
-	end
-
-	function tint.hex(hex: string)
-		return tint.rgb(parse_hex(hex))
-	end
-
-	function tint.bg_hex(hex: string)
-		return tint.bg_rgb(parse_hex(hex))
-	end
-
-	function tint.ansi256(code: number)
-		if has_256 then return create_style(level, { { `38;5;{code}`, 39 } }) end
-		return create_style(level, { { color_convert.ansi256_to_ansi16(code), 39 } })
-	end
-
-	function tint.bg_ansi256(code: number)
-		if has_256 then return create_style(level, { { `48;5;{code}`, 49 } }) end
-		return create_style(level, { { color_convert.ansi256_to_ansi16(code) + 10, 49 } })
-	end
-
-	function tint.underline_ansi256(code: number)
-		if has_256 then return create_style(level, { { `58;5;{code}`, 59 } }) end
-		return create_style(level, { { `58;5;{color_convert.ansi256_to_palette16(code)}`, 59 } })
-	end
-
-	function tint.underline_rgb(r: number, g: number, b: number)
-		if has_16m then return create_style(level, { { `58;2;{r};{g};{b}`, 59 } }) end
-		return tint.underline_ansi256(color_convert.to_ansi256(r, g, b))
-	end
-
-	function tint.underline_hex(hex: string)
-		return tint.underline_rgb(parse_hex(hex))
-	end
-
 	function tint.strip(text: string)
-		local stripped = string.gsub(text, "\27%[[%d;:?]*[ -/]*[@-~]", "")
-		return stripped
+		return string.gsub(text, "\27%[[%d;:?]*[ -/]*[@-~]", "")
 	end
 
 	return tint :: tint
