@@ -1,5 +1,5 @@
 name = "omarcoaraujo/tint"
-version = "0.2.0"
+version = "0.2.1"
 description = "Terminal string styling library for Luau"
 license = "MIT"
 authors = ["omarcoaraujo <omarcoaraujo@outlook.com>"]
